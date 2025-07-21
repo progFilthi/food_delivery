@@ -8,6 +8,9 @@ import 'package:food_delivery_app/screens/home/item_details_screen.dart';
 import 'package:food_delivery_app/screens/orders/orders_screen.dart';
 import 'package:food_delivery_app/screens/orders/order_status_screen.dart';
 import 'package:food_delivery_app/screens/orders/order_summary_screen.dart';
+import 'package:food_delivery_app/screens/events/events_screen.dart';
+import 'package:food_delivery_app/screens/schedule/schedule_screen.dart';
+import 'package:food_delivery_app/screens/profile/profile_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 
@@ -41,6 +44,9 @@ class MyApp extends StatelessWidget {
         '/orders': (context) => const OrdersScreen(),
         '/order_status': (context) => const OrderStatusScreen(),
         '/order_summary': (context) => const OrderSummaryScreen(),
+        '/events': (context) => const EventsScreen(),
+        '/schedule': (context) => const ScheduleScreen(),
+        '/profile': (context) => const ProfileScreen(),
       },
     );
   }

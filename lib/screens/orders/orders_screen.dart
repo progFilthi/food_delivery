@@ -146,8 +146,15 @@ class _OrdersScreenState extends State<OrdersScreen> {
           // Handle bottom navigation tap
           if (index == 0) {
             Navigator.pushNamed(context, '/home');
+          } else if (index == 1) {
+            Navigator.pushNamed(context, '/events');
+          } else if (index == 2) {
+            // Already on Orders
+          } else if (index == 3) {
+            Navigator.pushNamed(context, '/schedule');
+          } else if (index == 4) {
+            Navigator.pushNamed(context, '/profile');
           }
-          // Other tabs are placeholders for now
         },
         type: BottomNavigationBarType.fixed,
       ),

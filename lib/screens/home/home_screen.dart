@@ -20,16 +20,16 @@ class _HomeScreenState extends State<HomeScreen> {
         // Home
         break;
       case 1:
-        // Events (placeholder)
+        Navigator.pushNamed(context, '/events');
         break;
       case 2:
-        Navigator.pushNamed(context, '/orders'); // Navigate to Orders
+        Navigator.pushNamed(context, '/orders');
         break;
       case 3:
-        // Schedule (placeholder)
+        Navigator.pushNamed(context, '/schedule');
         break;
       case 4:
-        // Profile (placeholder)
+        Navigator.pushNamed(context, '/profile');
         break;
     }
   }
