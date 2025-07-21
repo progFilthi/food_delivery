@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart'; // Required for TapGestureRecognizer
 import 'package:food_delivery_app/widgets/custom_text_field.dart';
 import 'package:food_delivery_app/widgets/custom_phone_field.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class CreateAccountScreen extends StatefulWidget {
   const CreateAccountScreen({super.key});
@@ -12,6 +13,50 @@ class CreateAccountScreen extends StatefulWidget {
 
 class _CreateAccountScreenState extends State<CreateAccountScreen> {
   bool _agreedToTerms = false;
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+  bool _isLoading = false;
+
+  @override
+  void dispose() {
+    _emailController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
+
+  Future<void> _signUp() async {
+    setState(() {
+      _isLoading = true;
+    });
+    try {
+      await FirebaseAuth.instance.createUserWithEmailAndPassword(
+        email: _emailController.text.trim(),
+        password: _passwordController.text.trim(),
+      );
+      if (mounted) {
+        Navigator.pushNamed(context, '/verification');
+      }
+    } on FirebaseAuthException catch (e) {
+      showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: const Text('Signup Failed'),
+          content: Text(e.message ?? 'Unknown error'),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text('OK'),
+            ),
+          ],
+        ),
+      );
+    } finally {
+      if (mounted)
+        setState(() {
+          _isLoading = false;
+        });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -33,18 +78,12 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
           children: [
             const Text(
               'Create your account',
-              style: TextStyle(
-                fontSize: 28,
-                fontWeight: FontWeight.bold,
-              ),
+              style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 8),
             const Text(
               'You\'re 5 minutes away from ordering your first meal!',
-              style: TextStyle(
-                fontSize: 16,
-                color: Colors.grey,
-              ),
+              style: TextStyle(fontSize: 16, color: Colors.grey),
             ),
             const SizedBox(height: 24),
             Row(
@@ -62,7 +101,9 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                         borderRadius: BorderRadius.circular(12),
                       ),
                     ),
-                    icon: const Icon(Icons.g_mobiledata), // Placeholder for Google icon
+                    icon: const Icon(
+                      Icons.g_mobiledata,
+                    ), // Placeholder for Google icon
                     label: const Text('Sign up with google'),
                   ),
                 ),
@@ -98,9 +139,24 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
             const SizedBox(height: 16),
             CustomPhoneField(label: 'Phone number *', prefixText: '+44'),
             const SizedBox(height: 16),
-            CustomTextField(label: 'Email address', hintText: 'e.g. johndoe@gmail.com'),
+            CustomTextField(
+              label: 'Email address',
+              hintText: 'e.g. johndoe@gmail.com',
+              controller: _emailController,
+            ),
             const SizedBox(height: 16),
-            CustomTextField(label: 'Date of birth', hintText: 'DD/MM/YYYY', suffixIcon: Icons.calendar_today),
+            CustomTextField(
+              label: 'Password',
+              hintText: 'Enter password',
+              controller: _passwordController,
+              obscureText: true,
+            ),
+            const SizedBox(height: 16),
+            CustomTextField(
+              label: 'Date of birth',
+              hintText: 'DD/MM/YYYY',
+              suffixIcon: Icons.calendar_today,
+            ),
             const SizedBox(height: 24),
             Row(
               children: [
@@ -121,7 +177,10 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                       children: [
                         TextSpan(
                           text: 'Terms of use',
-                          style: const TextStyle(color: Colors.orange, decoration: TextDecoration.underline),
+                          style: const TextStyle(
+                            color: Colors.orange,
+                            decoration: TextDecoration.underline,
+                          ),
                           recognizer: TapGestureRecognizer()
                             ..onTap = () {
                               // Navigate to terms of use
@@ -130,7 +189,10 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                         const TextSpan(text: ' and '),
                         TextSpan(
                           text: 'Privacy policy',
-                          style: const TextStyle(color: Colors.orange, decoration: TextDecoration.underline),
+                          style: const TextStyle(
+                            color: Colors.orange,
+                            decoration: TextDecoration.underline,
+                          ),
                           recognizer: TapGestureRecognizer()
                             ..onTap = () {
                               // Navigate to privacy policy
@@ -146,9 +208,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(
-                onPressed: _agreedToTerms ? () {
-                  Navigator.pushNamed(context, '/verification');
-                } : null,
+                onPressed: _agreedToTerms && !_isLoading ? _signUp : null,
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.orange,
                   foregroundColor: Colors.white,
@@ -157,7 +217,9 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                     borderRadius: BorderRadius.circular(12),
                   ),
                 ),
-                child: const Text('Sign me up!'),
+                child: _isLoading
+                    ? const CircularProgressIndicator(color: Colors.white)
+                    : const Text('Sign me up!'),
               ),
             ),
             const SizedBox(height: 16),

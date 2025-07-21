@@ -5,6 +5,7 @@ class CustomTextField extends StatelessWidget {
   final String hintText;
   final IconData? suffixIcon;
   final bool obscureText;
+  final TextEditingController? controller;
 
   const CustomTextField({
     super.key,
@@ -12,6 +13,7 @@ class CustomTextField extends StatelessWidget {
     required this.hintText,
     this.suffixIcon,
     this.obscureText = false,
+    this.controller,
   });
 
   @override
@@ -19,12 +21,10 @@ class CustomTextField extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          label,
-          style: const TextStyle(fontWeight: FontWeight.bold),
-        ),
+        Text(label, style: const TextStyle(fontWeight: FontWeight.bold)),
         const SizedBox(height: 8),
         TextField(
+          controller: controller,
           obscureText: obscureText,
           decoration: InputDecoration(
             hintText: hintText,
@@ -34,7 +34,9 @@ class CustomTextField extends StatelessWidget {
             ),
             filled: true,
             fillColor: Colors.grey[200],
-            suffixIcon: suffixIcon != null ? Icon(suffixIcon, color: Colors.grey) : null,
+            suffixIcon: suffixIcon != null
+                ? Icon(suffixIcon, color: Colors.grey)
+                : null,
           ),
         ),
       ],

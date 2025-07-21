@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:food_delivery_app/widgets/custom_text_field.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -10,6 +11,50 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   bool _obscureText = true;
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+  bool _isLoading = false;
+
+  @override
+  void dispose() {
+    _emailController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
+
+  Future<void> _login() async {
+    setState(() {
+      _isLoading = true;
+    });
+    try {
+      await FirebaseAuth.instance.signInWithEmailAndPassword(
+        email: _emailController.text.trim(),
+        password: _passwordController.text.trim(),
+      );
+      if (mounted) {
+        Navigator.pushNamed(context, '/home');
+      }
+    } on FirebaseAuthException catch (e) {
+      showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: const Text('Login Failed'),
+          content: Text(e.message ?? 'Unknown error'),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text('OK'),
+            ),
+          ],
+        ),
+      );
+    } finally {
+      if (mounted)
+        setState(() {
+          _isLoading = false;
+        });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -31,51 +76,25 @@ class _LoginScreenState extends State<LoginScreen> {
           children: [
             const Text(
               'Login',
-              style: TextStyle(
-                fontSize: 28,
-                fontWeight: FontWeight.bold,
-              ),
+              style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 8),
             const Text(
               'We\'re excited to have you back! 👋',
-              style: TextStyle(
-                fontSize: 16,
-                color: Colors.grey,
-              ),
+              style: TextStyle(fontSize: 16, color: Colors.grey),
             ),
             const SizedBox(height: 24),
-            CustomTextField(label: 'Email address', hintText: 'e.g. johndoe@gmail.com'),
+            CustomTextField(
+              label: 'Email address',
+              hintText: 'e.g. johndoe@gmail.com',
+              controller: _emailController,
+            ),
             const SizedBox(height: 16),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Text(
-                  'Password',
-                  style: TextStyle(fontWeight: FontWeight.bold),
-                ),
-                const SizedBox(height: 8),
-                TextField(
-                  obscureText: _obscureText,
-                  decoration: InputDecoration(
-                    hintText: 'Enter password',
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
-                      borderSide: BorderSide.none,
-                    ),
-                    filled: true,
-                    fillColor: Colors.grey[200],
-                    suffixIcon: IconButton(
-                      icon: Icon(_obscureText ? Icons.visibility_off : Icons.visibility),
-                      onPressed: () {
-                        setState(() {
-                          _obscureText = !_obscureText;
-                        });
-                      },
-                    ),
-                  ),
-                ),
-              ],
+            CustomTextField(
+              label: 'Password',
+              hintText: 'Enter password',
+              controller: _passwordController,
+              obscureText: true,
             ),
             const SizedBox(height: 16),
             Align(
@@ -94,9 +113,7 @@ class _LoginScreenState extends State<LoginScreen> {
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(
-                onPressed: () {
-                  Navigator.pushNamed(context, '/home'); // Navigate to home after login
-                },
+                onPressed: !_isLoading ? _login : null,
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.orange,
                   foregroundColor: Colors.white,
@@ -105,7 +122,9 @@ class _LoginScreenState extends State<LoginScreen> {
                     borderRadius: BorderRadius.circular(12),
                   ),
                 ),
-                child: const Text('Get me in!'),
+                child: _isLoading
+                    ? const CircularProgressIndicator(color: Colors.white)
+                    : const Text('Get me in!'),
               ),
             ),
             const SizedBox(height: 24),
@@ -124,7 +143,9 @@ class _LoginScreenState extends State<LoginScreen> {
                         borderRadius: BorderRadius.circular(12),
                       ),
                     ),
-                    icon: const Icon(Icons.g_mobiledata), // Placeholder for Google icon
+                    icon: const Icon(
+                      Icons.g_mobiledata,
+                    ), // Placeholder for Google icon
                     label: const Text('Sign in with google'),
                   ),
                 ),
@@ -152,7 +173,10 @@ class _LoginScreenState extends State<LoginScreen> {
             Center(
               child: TextButton(
                 onPressed: () {
-                  Navigator.pushNamed(context, '/'); // Navigate back to create account
+                  Navigator.pushNamed(
+                    context,
+                    '/',
+                  ); // Navigate back to create account
                 },
                 child: const Text(
                   'Don\'t have an account? Sign up',
