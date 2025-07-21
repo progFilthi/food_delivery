@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../cart_manager.dart';
 
 class ItemDetailsScreen extends StatefulWidget {
   const ItemDetailsScreen({super.key});
@@ -68,12 +69,20 @@ class _ItemDetailsScreenState extends State<ItemDetailsScreen> {
                   const SizedBox(height: 16),
                   const Text(
                     '£20 per portion',
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.orange),
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.orange,
+                    ),
                   ),
                   const SizedBox(height: 16),
                   Row(
                     children: const [
-                      Icon(Icons.local_fire_department, color: Colors.red, size: 18),
+                      Icon(
+                        Icons.local_fire_department,
+                        color: Colors.red,
+                        size: 18,
+                      ),
                       Text('Mildy Spicy'),
                     ],
                   ),
@@ -104,7 +113,9 @@ class _ItemDetailsScreenState extends State<ItemDetailsScreen> {
                   offset: const Offset(0, 3),
                 ),
               ],
-              borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+              borderRadius: const BorderRadius.vertical(
+                top: Radius.circular(24),
+              ),
             ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -122,7 +133,10 @@ class _ItemDetailsScreenState extends State<ItemDetailsScreen> {
                       ),
                       Text(
                         '$_quantity',
-                        style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                        style: const TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                       IconButton(
                         icon: const Icon(Icons.add),
@@ -136,6 +150,18 @@ class _ItemDetailsScreenState extends State<ItemDetailsScreen> {
                   child: ElevatedButton(
                     onPressed: () {
                       // Add to tray logic
+                      CartManager().addItem(
+                        CartItem(
+                          name: 'Sample Item',
+                          quantity: _quantity,
+                          price: 20.0,
+                          vendor: 'Jollof Hut',
+                          image: 'assets/jollof.jpg',
+                        ),
+                      );
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text('Added to cart!')),
+                      );
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.orange,
@@ -162,10 +188,7 @@ class _ItemDetailsScreenState extends State<ItemDetailsScreen> {
           value,
           style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
         ),
-        Text(
-          label,
-          style: const TextStyle(color: Colors.grey),
-        ),
+        Text(label, style: const TextStyle(color: Colors.grey)),
       ],
     );
   }

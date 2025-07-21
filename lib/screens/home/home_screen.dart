@@ -169,25 +169,18 @@ class _HomeScreenState extends State<HomeScreen> {
     return Card(
       elevation: 2,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+      child: Row(
         children: [
-          ClipRRect(
-            borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
-            child: Image.asset(
-              imageUrl,
-              height: 180,
-              width: double.infinity,
-              fit: BoxFit.cover,
-              errorBuilder: (context, error, stackTrace) => Container(
-                height: 180,
-                color: Colors.grey[300],
-                child: const Center(child: Icon(Icons.broken_image)),
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: CircleAvatar(
+              radius: 32,
+              backgroundImage: AssetImage(
+                imageUrl.isNotEmpty ? imageUrl : 'assets/jollof.jpg',
               ),
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.all(16.0),
+          Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [

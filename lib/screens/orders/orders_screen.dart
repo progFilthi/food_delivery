@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../cart_manager.dart';
 
 class OrdersScreen extends StatefulWidget {
   const OrdersScreen({super.key});
@@ -9,6 +10,22 @@ class OrdersScreen extends StatefulWidget {
 
 class _OrdersScreenState extends State<OrdersScreen> {
   bool _showOngoingOrders = true;
+
+  @override
+  void initState() {
+    super.initState();
+    CartManager().addListener(_onCartChanged);
+  }
+
+  @override
+  void dispose() {
+    CartManager().removeListener(_onCartChanged);
+    super.dispose();
+  }
+
+  void _onCartChanged() {
+    setState(() {});
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -31,7 +48,10 @@ class _OrdersScreenState extends State<OrdersScreen> {
       body: Column(
         children: [
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 16.0),
+            padding: const EdgeInsets.symmetric(
+              horizontal: 24.0,
+              vertical: 16.0,
+            ),
             child: Container(
               decoration: BoxDecoration(
                 color: Colors.grey[200],
@@ -49,14 +69,18 @@ class _OrdersScreenState extends State<OrdersScreen> {
                       child: Container(
                         padding: const EdgeInsets.symmetric(vertical: 12),
                         decoration: BoxDecoration(
-                          color: _showOngoingOrders ? Colors.orange : Colors.transparent,
+                          color: _showOngoingOrders
+                              ? Colors.orange
+                              : Colors.transparent,
                           borderRadius: BorderRadius.circular(10),
                         ),
                         child: Center(
                           child: Text(
                             'On-going orders',
                             style: TextStyle(
-                              color: _showOngoingOrders ? Colors.white : Colors.black,
+                              color: _showOngoingOrders
+                                  ? Colors.white
+                                  : Colors.black,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
@@ -74,14 +98,18 @@ class _OrdersScreenState extends State<OrdersScreen> {
                       child: Container(
                         padding: const EdgeInsets.symmetric(vertical: 12),
                         decoration: BoxDecoration(
-                          color: !_showOngoingOrders ? Colors.orange : Colors.transparent,
+                          color: !_showOngoingOrders
+                              ? Colors.orange
+                              : Colors.transparent,
                           borderRadius: BorderRadius.circular(10),
                         ),
                         child: Center(
                           child: Text(
                             'Completed orders',
                             style: TextStyle(
-                              color: !_showOngoingOrders ? Colors.white : Colors.black,
+                              color: !_showOngoingOrders
+                                  ? Colors.white
+                                  : Colors.black,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
@@ -94,32 +122,22 @@ class _OrdersScreenState extends State<OrdersScreen> {
             ),
           ),
           Expanded(
-            child: _showOngoingOrders ? _buildOngoingOrdersList(context) : _buildCompletedOrdersList(),
+            child: _showOngoingOrders
+                ? _buildOngoingOrdersList(context)
+                : _buildCompletedOrdersList(),
           ),
         ],
       ),
       bottomNavigationBar: BottomNavigationBar(
         items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Home',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.event),
-            label: 'Events',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.receipt),
-            label: 'Orders',
-          ),
+          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
+          BottomNavigationBarItem(icon: Icon(Icons.event), label: 'Events'),
+          BottomNavigationBarItem(icon: Icon(Icons.receipt), label: 'Orders'),
           BottomNavigationBarItem(
             icon: Icon(Icons.schedule),
             label: 'Schedule',
           ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            label: 'Profile',
-          ),
+          BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile'),
         ],
         currentIndex: 2, // Highlight Orders tab
         selectedItemColor: Colors.orange,
@@ -137,43 +155,50 @@ class _OrdersScreenState extends State<OrdersScreen> {
   }
 
   Widget _buildOngoingOrdersList(BuildContext context) {
-    return ListView(
+    final cartItems = CartManager().items;
+    if (cartItems.isEmpty) {
+      return const Center(child: Text('No ongoing orders.'));
+    }
+    return ListView.builder(
       padding: const EdgeInsets.all(24.0),
-      children: [
-        GestureDetector(
-          onTap: () {
-            Navigator.pushNamed(context, '/order_status');
-          },
+      itemCount: cartItems.length,
+      itemBuilder: (context, index) {
+        final item = cartItems[index];
+        return Padding(
+          padding: const EdgeInsets.only(bottom: 16.0),
           child: _buildOrderCard(
-            'The Marseilles',
+            item.vendor,
             'Estimated delivery time: 05:42pm',
-            '25th Aug 2023 05:15',
-            'Order #9837838',
+            'Today',
+            'Order #${index + 1}',
             'Single',
             'Current status: Order is being prepared',
+            image: item.image,
+            itemName: item.name,
+            quantity: item.quantity,
+            price: item.price,
           ),
-        ),
-        const SizedBox(height: 16),
-        _buildOrderCard(
-          'Jollof Hut',
-          'Estimated delivery time: 06:00pm',
-          '25th Aug 2023 05:30',
-          'Order #9837839',
-          'Bulk',
-          'Current status: Order accepted',
-        ),
-      ],
+        );
+      },
     );
   }
 
   Widget _buildCompletedOrdersList() {
-    return const Center(
-      child: Text('No completed orders yet.'),
-    );
+    return const Center(child: Text('No completed orders yet.'));
   }
 
   Widget _buildOrderCard(
-      String vendorName, String deliveryTime, String orderDate, String orderNumber, String orderType, String status) {
+    String vendorName,
+    String deliveryTime,
+    String orderDate,
+    String orderNumber,
+    String orderType,
+    String status, {
+    String? image,
+    String? itemName,
+    int? quantity,
+    double? price,
+  }) {
     return Card(
       elevation: 2,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
@@ -183,11 +208,27 @@ class _OrdersScreenState extends State<OrdersScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(
-                  vendorName,
-                  style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                CircleAvatar(
+                  radius: 28,
+                  backgroundImage: AssetImage(image ?? 'assets/jollof.jpg'),
+                ),
+                const SizedBox(width: 16),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        vendorName,
+                        style: const TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      if (itemName != null)
+                        Text(itemName, style: const TextStyle(fontSize: 16)),
+                    ],
+                  ),
                 ),
                 Text(
                   orderNumber,
@@ -205,7 +246,14 @@ class _OrdersScreenState extends State<OrdersScreen> {
               orderDate,
               style: const TextStyle(fontSize: 14, color: Colors.grey),
             ),
-            const SizedBox(height: 16),
+            if (quantity != null && price != null)
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 8.0),
+                child: Text(
+                  'Qty: $quantity  |  £${(price * quantity).toStringAsFixed(2)}',
+                ),
+              ),
+            const SizedBox(height: 8),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -214,14 +262,20 @@ class _OrdersScreenState extends State<OrdersScreen> {
                   style: const TextStyle(fontSize: 14, color: Colors.orange),
                 ),
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 6,
+                  ),
                   decoration: BoxDecoration(
                     color: Colors.grey[200],
                     borderRadius: BorderRadius.circular(20),
                   ),
                   child: Text(
                     orderType,
-                    style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
+                    style: const TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ),
               ],

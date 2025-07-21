@@ -66,9 +66,7 @@ class OrderSummaryScreen extends StatelessWidget {
               children: [
                 CircleAvatar(
                   radius: 30,
-                  backgroundImage: NetworkImage(
-                    'https://placehold.co/100x100/ADD8E6/000000?text=JP', // Placeholder rider image
-                  ),
+                  backgroundImage: AssetImage('assets/jollof.jpg'),
                   onBackgroundImageError: (exception, stacktrace) {
                     // Handle image loading error
                   },
@@ -79,7 +77,10 @@ class OrderSummaryScreen extends StatelessWidget {
                   children: const [
                     Text(
                       'Jenkins Paul',
-                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                     Text(
                       '22 minutes away',
@@ -98,7 +99,10 @@ class OrderSummaryScreen extends StatelessWidget {
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12),
                     ),
-                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 12,
+                    ),
                   ),
                   child: const Text('Call rider'),
                 ),
@@ -121,7 +125,10 @@ class OrderSummaryScreen extends StatelessWidget {
             children: [
               Text(
                 item,
-                style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+                style: const TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w500,
+                ),
               ),
               Text(
                 quantity,

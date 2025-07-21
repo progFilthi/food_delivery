@@ -10,10 +10,14 @@ class VerificationCodeScreen extends StatefulWidget {
 }
 
 class _VerificationCodeScreenState extends State<VerificationCodeScreen> {
-  final List<TextEditingController> _otpControllers =
-      List.generate(4, (index) => TextEditingController());
-  final List<FocusNode> _otpFocusNodes =
-      List.generate(4, (index) => FocusNode());
+  final List<TextEditingController> _otpControllers = List.generate(
+    4,
+    (index) => TextEditingController(),
+  );
+  final List<FocusNode> _otpFocusNodes = List.generate(
+    4,
+    (index) => FocusNode(),
+  );
   int _resendTimer = 59;
   late Ticker _ticker;
 
@@ -77,12 +81,17 @@ class _VerificationCodeScreenState extends State<VerificationCodeScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            const SizedBox(height: 16),
+            Center(
+              child: CircleAvatar(
+                radius: 40,
+                backgroundImage: AssetImage('assets/jollof.jpg'),
+              ),
+            ),
+            const SizedBox(height: 24),
             const Text(
               'Enter verification code',
-              style: TextStyle(
-                fontSize: 28,
-                fontWeight: FontWeight.bold,
-              ),
+              style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 8),
             RichText(
@@ -96,7 +105,10 @@ class _VerificationCodeScreenState extends State<VerificationCodeScreen> {
                     children: [
                       TextSpan(
                         text: 'Edit email address',
-                        style: const TextStyle(color: Colors.orange, decoration: TextDecoration.underline),
+                        style: const TextStyle(
+                          color: Colors.orange,
+                          decoration: TextDecoration.underline,
+                        ),
                         recognizer: TapGestureRecognizer()
                           ..onTap = () {
                             // Navigate to edit email address
@@ -145,7 +157,10 @@ class _VerificationCodeScreenState extends State<VerificationCodeScreen> {
               width: double.infinity,
               child: ElevatedButton(
                 onPressed: () {
-                  Navigator.pushNamed(context, '/home'); // Navigate to home after verification
+                  Navigator.pushNamed(
+                    context,
+                    '/home',
+                  ); // Navigate to home after verification
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.orange,

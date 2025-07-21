@@ -30,6 +30,12 @@ class VendorDetailsScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            const SizedBox(height: 16),
+            CircleAvatar(
+              radius: 60,
+              backgroundImage: AssetImage('assets/jollof.jpg'),
+            ),
+            const SizedBox(height: 24),
             Image.asset(
               'assets/jollof.jpg', // Placeholder vendor image
               height: 200,
@@ -51,7 +57,10 @@ class VendorDetailsScreen extends StatelessWidget {
                     children: [
                       const Text(
                         'The Marseilles',
-                        style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                        style: TextStyle(
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                       Row(
                         children: const [
@@ -145,7 +154,13 @@ class VendorDetailsScreen extends StatelessWidget {
   }
 
   Widget _buildMenuItem(
-      BuildContext context, String name, String description, String price, String spiciness, String imageUrl) {
+    BuildContext context,
+    String name,
+    String description,
+    String price,
+    String spiciness,
+    String imageUrl,
+  ) {
     return GestureDetector(
       onTap: () {
         Navigator.pushNamed(context, '/item_details');
@@ -181,7 +196,10 @@ class VendorDetailsScreen extends StatelessWidget {
                   children: [
                     Text(
                       name,
-                      style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                      style: const TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                     const SizedBox(height: 4),
                     Text(
@@ -195,10 +213,18 @@ class VendorDetailsScreen extends StatelessWidget {
                       children: [
                         Text(
                           price,
-                          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.orange),
+                          style: const TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.orange,
+                          ),
                         ),
                         const SizedBox(width: 12),
-                        const Icon(Icons.local_fire_department, color: Colors.red, size: 16),
+                        const Icon(
+                          Icons.local_fire_department,
+                          color: Colors.red,
+                          size: 16,
+                        ),
                         Text(spiciness),
                       ],
                     ),
