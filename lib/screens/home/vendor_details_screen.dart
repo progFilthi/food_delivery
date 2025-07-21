@@ -5,6 +5,12 @@ class VendorDetailsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final vendor =
+        ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
+    final vendorName = vendor?['name'] ?? 'The Marseilles';
+    final vendorImage = vendor?['image'] ?? 'assets/jollof.jpg';
+    final vendorRating = vendor?['rating'] ?? '4.2';
+    final vendorReviews = vendor?['reviews'] ?? '209';
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
@@ -31,13 +37,10 @@ class VendorDetailsScreen extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const SizedBox(height: 16),
-            CircleAvatar(
-              radius: 60,
-              backgroundImage: AssetImage('assets/jollof.jpg'),
-            ),
+            CircleAvatar(radius: 60, backgroundImage: AssetImage(vendorImage)),
             const SizedBox(height: 24),
             Image.asset(
-              'assets/jollof.jpg', // Placeholder vendor image
+              vendorImage,
               height: 200,
               width: double.infinity,
               fit: BoxFit.cover,
@@ -55,17 +58,17 @@ class VendorDetailsScreen extends StatelessWidget {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      const Text(
-                        'The Marseilles',
-                        style: TextStyle(
+                      Text(
+                        vendorName,
+                        style: const TextStyle(
                           fontSize: 24,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
                       Row(
-                        children: const [
-                          Icon(Icons.star, color: Colors.amber, size: 20),
-                          Text('4.2 (209)'),
+                        children: [
+                          const Icon(Icons.star, color: Colors.amber, size: 20),
+                          Text('$vendorRating ($vendorReviews)'),
                         ],
                       ),
                     ],
@@ -95,7 +98,9 @@ class VendorDetailsScreen extends StatelessWidget {
                     'Grilled chicken salad with eggs, tomato, cabbage, sweet peas',
                     '£20',
                     'Mildy Spicy',
-                    'assets/jollof.jpg', // Placeholder image
+                    vendorImage,
+                    vendorName: vendorName,
+                    priceValue: 20.0,
                   ),
                   const SizedBox(height: 16),
                   _buildMenuItem(
@@ -104,7 +109,9 @@ class VendorDetailsScreen extends StatelessWidget {
                     'Sweet deep fried chin chin',
                     '£10',
                     'Mid-level Spicy',
-                    'assets/jollof.jpg',
+                    vendorImage,
+                    vendorName: vendorName,
+                    priceValue: 10.0,
                   ),
                   const SizedBox(height: 16),
                   _buildMenuItem(
@@ -113,7 +120,9 @@ class VendorDetailsScreen extends StatelessWidget {
                     'Grilled chicken salad with eggs, tomato, cabbage, sweet peas',
                     '£25',
                     'Spicy',
-                    'assets/jollof.jpg', // Placeholder image
+                    vendorImage,
+                    vendorName: vendorName,
+                    priceValue: 25.0,
                   ),
                   const SizedBox(height: 16),
                   _buildMenuItem(
@@ -122,7 +131,9 @@ class VendorDetailsScreen extends StatelessWidget {
                     'Grilled chicken salad with eggs, tomato, cabbage, sweet peas',
                     '£30',
                     'Spicy',
-                    'assets/jollof.jpg', // Placeholder image
+                    vendorImage,
+                    vendorName: vendorName,
+                    priceValue: 30.0,
                   ),
                 ],
               ),
@@ -159,11 +170,22 @@ class VendorDetailsScreen extends StatelessWidget {
     String description,
     String price,
     String spiciness,
-    String imageUrl,
-  ) {
+    String imageUrl, {
+    String? vendorName,
+    double? priceValue,
+  }) {
     return GestureDetector(
       onTap: () {
-        Navigator.pushNamed(context, '/item_details');
+        Navigator.pushNamed(
+          context,
+          '/item_details',
+          arguments: {
+            'name': name,
+            'price': priceValue ?? 20.0,
+            'image': imageUrl,
+            'vendor': vendorName ?? '',
+          },
+        );
       },
       child: Card(
         elevation: 0,

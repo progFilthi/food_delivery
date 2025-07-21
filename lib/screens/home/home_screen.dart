@@ -10,6 +10,76 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   int _selectedIndex = 0;
 
+  final List<Map<String, dynamic>> _vendors = [
+    {
+      'name': 'Jollof hut',
+      'priceRange': 'Prices from £20',
+      'rating': '4.2',
+      'reviews': '128',
+      'fsaRating': 'FSA rating(5)',
+      'status': 'Open',
+      'image': 'assets/jollof.jpg',
+      'isPrivate': false,
+    },
+    {
+      'name': 'The Marseilles',
+      'priceRange': 'Prices from £25',
+      'rating': '4.5',
+      'reviews': '200',
+      'fsaRating': 'FSA rating(4)',
+      'status': 'Private vendor',
+      'image': 'assets/jollof.jpg',
+      'isPrivate': true,
+    },
+    {
+      'name': 'Pasta Palace',
+      'priceRange': 'Prices from £15',
+      'rating': '3.9',
+      'reviews': '90',
+      'fsaRating': 'FSA rating(3)',
+      'status': 'Open',
+      'image': 'assets/jollof.jpg',
+      'isPrivate': false,
+    },
+    {
+      'name': 'Suya Spot',
+      'priceRange': 'Prices from £18',
+      'rating': '4.0',
+      'reviews': '75',
+      'fsaRating': 'FSA rating(4)',
+      'status': 'Open',
+      'image': 'assets/jollof.jpg',
+      'isPrivate': false,
+    },
+  ];
+
+  final List<Map<String, dynamic>> _products = [
+    {
+      'name': 'Jollof Rice',
+      'price': 20.0,
+      'image': 'assets/jollof.jpg',
+      'vendor': 'Jollof hut',
+    },
+    {
+      'name': 'Pasta Special',
+      'price': 15.0,
+      'image': 'assets/jollof.jpg',
+      'vendor': 'Pasta Palace',
+    },
+    {
+      'name': 'Suya Platter',
+      'price': 18.0,
+      'image': 'assets/jollof.jpg',
+      'vendor': 'Suya Spot',
+    },
+    {
+      'name': 'Marseilles Chicken',
+      'price': 25.0,
+      'image': 'assets/jollof.jpg',
+      'vendor': 'The Marseilles',
+    },
+  ];
+
   void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
@@ -96,42 +166,60 @@ class _HomeScreenState extends State<HomeScreen> {
               style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 16),
-            GestureDetector(
-              onTap: () {
-                Navigator.pushNamed(context, '/vendor_details');
-              },
-              child: _buildVendorCard(
-                'Jollof hut',
-                'Prices from £20',
-                '4.2',
-                '128',
-                'FSA rating(5)',
-                'Open',
-                'assets/jollof.jpg', // Placeholder image
-                isPrivate: false,
+            Column(
+              children: _vendors
+                  .map(
+                    (vendor) => Padding(
+                      padding: const EdgeInsets.only(bottom: 16.0),
+                      child: GestureDetector(
+                        onTap: () {
+                          Navigator.pushNamed(
+                            context,
+                            '/vendor_details',
+                            arguments: vendor,
+                          );
+                        },
+                        child: _buildVendorCard(
+                          vendor['name'],
+                          vendor['priceRange'],
+                          vendor['rating'],
+                          vendor['reviews'],
+                          vendor['fsaRating'],
+                          vendor['status'],
+                          vendor['image'],
+                          isPrivate: vendor['isPrivate'],
+                        ),
+                      ),
+                    ),
+                  )
+                  .toList(),
+            ),
+            const SizedBox(height: 32),
+            const Text(
+              'Popular Products',
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 16),
+            SizedBox(
+              height: 180,
+              child: ListView.separated(
+                scrollDirection: Axis.horizontal,
+                itemCount: _products.length,
+                separatorBuilder: (context, index) => const SizedBox(width: 16),
+                itemBuilder: (context, index) {
+                  final product = _products[index];
+                  return GestureDetector(
+                    onTap: () {
+                      Navigator.pushNamed(
+                        context,
+                        '/item_details',
+                        arguments: product,
+                      );
+                    },
+                    child: _buildProductCard(product),
+                  );
+                },
               ),
-            ),
-            const SizedBox(height: 16),
-            _buildVendorCard(
-              'The Marseilles',
-              'Prices from £25',
-              '4.5',
-              '200',
-              'FSA rating(4)',
-              'Private vendor',
-              'assets/jollof.jpg', // Placeholder image
-              isPrivate: true,
-            ),
-            const SizedBox(height: 16),
-            _buildVendorCard(
-              'Pasta Palace',
-              'Prices from £15',
-              '3.9',
-              '90',
-              'FSA rating(3)',
-              'Open',
-              'assets/jollof.jpg', // Placeholder image
-              isPrivate: false,
             ),
           ],
         ),
@@ -231,6 +319,50 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildProductCard(Map<String, dynamic> product) {
+    return Card(
+      elevation: 2,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      child: Container(
+        width: 140,
+        padding: const EdgeInsets.all(12),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            ClipRRect(
+              borderRadius: BorderRadius.circular(12),
+              child: Image.asset(
+                product['image'],
+                height: 80,
+                width: double.infinity,
+                fit: BoxFit.cover,
+              ),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              product['name'],
+              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+            ),
+            const SizedBox(height: 4),
+            Text(
+              product['vendor'],
+              style: const TextStyle(color: Colors.grey, fontSize: 14),
+            ),
+            const SizedBox(height: 4),
+            Text(
+              '£${product['price'].toStringAsFixed(2)}',
+              style: const TextStyle(
+                color: Colors.orange,
+                fontWeight: FontWeight.bold,
+                fontSize: 16,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
