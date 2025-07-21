@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../cart_manager.dart';
 
 class ItemDetailsScreen extends StatefulWidget {
   const ItemDetailsScreen({super.key});
@@ -107,6 +108,38 @@ class _ItemDetailsScreenState extends State<ItemDetailsScreen> {
             ],
           ),
           const SizedBox(height: 32),
+          Spacer(),
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: SizedBox(
+              width: double.infinity,
+              height: 48,
+              child: ElevatedButton(
+                onPressed: () {
+                  CartManager().addItem(
+                    CartItem(
+                      name: name,
+                      quantity: _quantity,
+                      price: price,
+                      vendor: vendor,
+                      image: image,
+                    ),
+                  );
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('Added to cart!')),
+                  );
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.orange,
+                  foregroundColor: Colors.white,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
+                child: const Text('Add to Cart'),
+              ),
+            ),
+          ),
         ],
       ),
     );

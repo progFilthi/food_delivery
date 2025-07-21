@@ -33,10 +33,10 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
         email: _emailController.text.trim(),
         password: _passwordController.text.trim(),
       );
-      if (mounted) {
-        Navigator.pushNamed(context, '/verification');
-      }
+      if (!mounted) return;
+      Navigator.pushNamed(context, '/verification');
     } on FirebaseAuthException catch (e) {
+      if (!mounted) return;
       showDialog(
         context: context,
         builder: (context) => AlertDialog(
@@ -51,10 +51,11 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
         ),
       );
     } finally {
-      if (mounted)
+      if (mounted) {
         setState(() {
           _isLoading = false;
         });
+      }
     }
   }
 

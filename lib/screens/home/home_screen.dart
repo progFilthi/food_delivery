@@ -310,7 +310,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       decoration: BoxDecoration(
                         color: isPrivate
                             ? Colors.grey[300]
-                            : Colors.orange.withOpacity(0.2),
+                            : Colors.orange.withAlpha((0.2 * 255).toInt()),
                         borderRadius: BorderRadius.circular(8),
                       ),
                       child: Text(
