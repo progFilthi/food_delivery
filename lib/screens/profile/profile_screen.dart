@@ -4,6 +4,12 @@ import 'package:firebase_auth/firebase_auth.dart';
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
 
+  final Map<String, String> _user = const {
+    'name': 'John Doe',
+    'email': 'johndoe@gmail.com',
+    'image': 'https://randomuser.me/api/portraits/men/32.jpg',
+  };
+
   Future<void> _logout(BuildContext context) async {
     await FirebaseAuth.instance.signOut();
     Navigator.of(context).pushNamedAndRemoveUntil('/login', (route) => false);
@@ -23,19 +29,29 @@ class ProfileScreen extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             const SizedBox(height: 24),
-            const CircleAvatar(
-              radius: 60,
-              backgroundImage: AssetImage('assets/jollof.jpg'),
+            ClipOval(
+              child: Image.network(
+                _user['image']!,
+                width: 120,
+                height: 120,
+                fit: BoxFit.cover,
+                errorBuilder: (context, error, stackTrace) => Image.asset(
+                  'assets/jollof.jpg',
+                  width: 120,
+                  height: 120,
+                  fit: BoxFit.cover,
+                ),
+              ),
             ),
             const SizedBox(height: 24),
-            const Text(
-              'John Doe',
-              style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+            Text(
+              _user['name']!,
+              style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 8),
-            const Text(
-              'johndoe@gmail.com',
-              style: TextStyle(fontSize: 16, color: Colors.grey),
+            Text(
+              _user['email']!,
+              style: const TextStyle(fontSize: 16, color: Colors.grey),
             ),
             const SizedBox(height: 32),
             ListTile(

@@ -3,6 +3,27 @@ import 'package:flutter/material.dart';
 class EventsScreen extends StatelessWidget {
   const EventsScreen({super.key});
 
+  final List<Map<String, String>> _events = const [
+    {
+      'title': 'Food Festival',
+      'date': 'July 20, 2024',
+      'image':
+          'https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=400&q=80',
+    },
+    {
+      'title': 'Vendor Meetup',
+      'date': 'August 5, 2024',
+      'image':
+          'https://images.unsplash.com/photo-1519864600265-abb23847ef2c?auto=format&fit=crop&w=400&q=80',
+    },
+    {
+      'title': 'Cooking Masterclass',
+      'date': 'September 10, 2024',
+      'image':
+          'https://images.unsplash.com/photo-1523987355523-c7b5b0723c6b?auto=format&fit=crop&w=400&q=80',
+    },
+  ];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -14,12 +35,6 @@ class EventsScreen extends StatelessWidget {
       body: ListView(
         padding: const EdgeInsets.all(24.0),
         children: [
-          Center(
-            child: CircleAvatar(
-              radius: 60,
-              backgroundImage: AssetImage('assets/jollof.jpg'),
-            ),
-          ),
           const SizedBox(height: 24),
           const Text(
             'Upcoming Events',
@@ -27,26 +42,28 @@ class EventsScreen extends StatelessWidget {
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 16),
-          Card(
-            child: ListTile(
-              leading: CircleAvatar(
-                backgroundImage: AssetImage('assets/jollof.jpg'),
+          ..._events.map(
+            (event) => Card(
+              child: ListTile(
+                leading: ClipOval(
+                  child: Image.network(
+                    event['image']!,
+                    width: 48,
+                    height: 48,
+                    fit: BoxFit.cover,
+                    errorBuilder: (context, error, stackTrace) => Image.asset(
+                      'assets/jollof.jpg',
+                      width: 48,
+                      height: 48,
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                ),
+                title: Text(event['title']!),
+                subtitle: Text(event['date']!),
+                trailing: const Icon(Icons.arrow_forward_ios),
+                onTap: () {},
               ),
-              title: const Text('Food Festival'),
-              subtitle: const Text('July 20, 2024'),
-              trailing: const Icon(Icons.arrow_forward_ios),
-              onTap: () {},
-            ),
-          ),
-          Card(
-            child: ListTile(
-              leading: CircleAvatar(
-                backgroundImage: AssetImage('assets/jollof.jpg'),
-              ),
-              title: const Text('Vendor Meetup'),
-              subtitle: const Text('August 5, 2024'),
-              trailing: const Icon(Icons.arrow_forward_ios),
-              onTap: () {},
             ),
           ),
         ],

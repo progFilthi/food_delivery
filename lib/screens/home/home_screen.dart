@@ -18,7 +18,8 @@ class _HomeScreenState extends State<HomeScreen> {
       'reviews': '128',
       'fsaRating': 'FSA rating(5)',
       'status': 'Open',
-      'image': 'assets/jollof.jpg',
+      'image':
+          'https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=400&q=80',
       'isPrivate': false,
     },
     {
@@ -28,7 +29,8 @@ class _HomeScreenState extends State<HomeScreen> {
       'reviews': '200',
       'fsaRating': 'FSA rating(4)',
       'status': 'Private vendor',
-      'image': 'assets/jollof.jpg',
+      'image':
+          'https://images.unsplash.com/photo-1519864600265-abb23847ef2c?auto=format&fit=crop&w=400&q=80',
       'isPrivate': true,
     },
     {
@@ -38,7 +40,8 @@ class _HomeScreenState extends State<HomeScreen> {
       'reviews': '90',
       'fsaRating': 'FSA rating(3)',
       'status': 'Open',
-      'image': 'assets/jollof.jpg',
+      'image':
+          'https://images.unsplash.com/photo-1523987355523-c7b5b0723c6b?auto=format&fit=crop&w=400&q=80',
       'isPrivate': false,
     },
     {
@@ -48,7 +51,8 @@ class _HomeScreenState extends State<HomeScreen> {
       'reviews': '75',
       'fsaRating': 'FSA rating(4)',
       'status': 'Open',
-      'image': 'assets/jollof.jpg',
+      'image':
+          'https://images.unsplash.com/photo-1464306076886-debca5e8a6b0?auto=format&fit=crop&w=400&q=80',
       'isPrivate': false,
     },
   ];
@@ -57,25 +61,29 @@ class _HomeScreenState extends State<HomeScreen> {
     {
       'name': 'Jollof Rice',
       'price': 20.0,
-      'image': 'assets/jollof.jpg',
+      'image':
+          'https://images.unsplash.com/photo-1502741338009-cac2772e18bc?auto=format&fit=crop&w=400&q=80',
       'vendor': 'Jollof hut',
     },
     {
       'name': 'Pasta Special',
       'price': 15.0,
-      'image': 'assets/jollof.jpg',
+      'image':
+          'https://images.unsplash.com/photo-1519864600265-abb23847ef2c?auto=format&fit=crop&w=400&q=80',
       'vendor': 'Pasta Palace',
     },
     {
       'name': 'Suya Platter',
       'price': 18.0,
-      'image': 'assets/jollof.jpg',
+      'image':
+          'https://images.unsplash.com/photo-1464306076886-debca5e8a6b0?auto=format&fit=crop&w=400&q=80',
       'vendor': 'Suya Spot',
     },
     {
       'name': 'Marseilles Chicken',
       'price': 25.0,
-      'image': 'assets/jollof.jpg',
+      'image':
+          'https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=400&q=80',
       'vendor': 'The Marseilles',
     },
   ];
@@ -263,8 +271,20 @@ class _HomeScreenState extends State<HomeScreen> {
             padding: const EdgeInsets.all(16.0),
             child: CircleAvatar(
               radius: 32,
-              backgroundImage: AssetImage(
-                imageUrl.isNotEmpty ? imageUrl : 'assets/jollof.jpg',
+              backgroundColor: Colors.grey[200],
+              child: ClipOval(
+                child: Image.network(
+                  imageUrl,
+                  height: 64,
+                  width: 64,
+                  fit: BoxFit.cover,
+                  errorBuilder: (context, error, stackTrace) => Image.asset(
+                    'assets/jollof.jpg',
+                    height: 64,
+                    width: 64,
+                    fit: BoxFit.cover,
+                  ),
+                ),
               ),
             ),
           ),
@@ -327,30 +347,42 @@ class _HomeScreenState extends State<HomeScreen> {
     return Card(
       elevation: 2,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      clipBehavior: Clip.antiAlias,
       child: Container(
         width: 140,
         padding: const EdgeInsets.all(12),
         child: Column(
+          mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             ClipRRect(
               borderRadius: BorderRadius.circular(12),
-              child: Image.asset(
+              child: Image.network(
                 product['image'],
-                height: 80,
+                height: 90,
                 width: double.infinity,
                 fit: BoxFit.cover,
+                errorBuilder: (context, error, stackTrace) => Image.asset(
+                  'assets/jollof.jpg',
+                  height: 90,
+                  width: double.infinity,
+                  fit: BoxFit.cover,
+                ),
               ),
             ),
             const SizedBox(height: 8),
             Text(
               product['name'],
               style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
             ),
             const SizedBox(height: 4),
             Text(
               product['vendor'],
               style: const TextStyle(color: Colors.grey, fontSize: 14),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
             ),
             const SizedBox(height: 4),
             Text(

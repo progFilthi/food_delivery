@@ -11,6 +11,7 @@ class VendorDetailsScreen extends StatelessWidget {
     final vendorImage = vendor?['image'] ?? 'assets/jollof.jpg';
     final vendorRating = vendor?['rating'] ?? '4.2';
     final vendorReviews = vendor?['reviews'] ?? '209';
+    final isNetworkImage = vendorImage.toString().startsWith('http');
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
@@ -37,19 +38,51 @@ class VendorDetailsScreen extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const SizedBox(height: 16),
-            CircleAvatar(radius: 60, backgroundImage: AssetImage(vendorImage)),
-            const SizedBox(height: 24),
-            Image.asset(
-              vendorImage,
-              height: 200,
-              width: double.infinity,
-              fit: BoxFit.cover,
-              errorBuilder: (context, error, stackTrace) => Container(
-                height: 200,
-                color: Colors.grey[300],
-                child: const Center(child: Icon(Icons.broken_image)),
+            CircleAvatar(
+              radius: 60,
+              backgroundColor: Colors.grey[200],
+              child: ClipOval(
+                child: isNetworkImage
+                    ? Image.network(
+                        vendorImage,
+                        height: 120,
+                        width: 120,
+                        fit: BoxFit.cover,
+                        errorBuilder: (context, error, stackTrace) =>
+                            Image.asset(
+                              'assets/jollof.jpg',
+                              height: 120,
+                              width: 120,
+                              fit: BoxFit.cover,
+                            ),
+                      )
+                    : Image.asset(
+                        vendorImage,
+                        height: 120,
+                        width: 120,
+                        fit: BoxFit.cover,
+                      ),
               ),
             ),
+            const SizedBox(height: 24),
+            isNetworkImage
+                ? Image.network(
+                    vendorImage,
+                    height: 200,
+                    width: double.infinity,
+                    fit: BoxFit.cover,
+                    errorBuilder: (context, error, stackTrace) => Container(
+                      height: 200,
+                      color: Colors.grey[300],
+                      child: const Center(child: Icon(Icons.broken_image)),
+                    ),
+                  )
+                : Image.asset(
+                    vendorImage,
+                    height: 200,
+                    width: double.infinity,
+                    fit: BoxFit.cover,
+                  ),
             Padding(
               padding: const EdgeInsets.all(24.0),
               child: Column(
@@ -174,6 +207,7 @@ class VendorDetailsScreen extends StatelessWidget {
     String? vendorName,
     double? priceValue,
   }) {
+    final isNetworkImage = imageUrl.toString().startsWith('http');
     return GestureDetector(
       onTap: () {
         Navigator.pushNamed(
@@ -198,18 +232,25 @@ class VendorDetailsScreen extends StatelessWidget {
             children: [
               ClipRRect(
                 borderRadius: BorderRadius.circular(8),
-                child: Image.asset(
-                  imageUrl,
-                  height: 80,
-                  width: 80,
-                  fit: BoxFit.cover,
-                  errorBuilder: (context, error, stackTrace) => Container(
-                    height: 80,
-                    width: 80,
-                    color: Colors.grey[300],
-                    child: const Center(child: Icon(Icons.broken_image)),
-                  ),
-                ),
+                child: isNetworkImage
+                    ? Image.network(
+                        imageUrl,
+                        height: 80,
+                        width: 80,
+                        fit: BoxFit.cover,
+                        errorBuilder: (context, error, stackTrace) => Container(
+                          height: 80,
+                          width: 80,
+                          color: Colors.grey[300],
+                          child: const Center(child: Icon(Icons.broken_image)),
+                        ),
+                      )
+                    : Image.asset(
+                        imageUrl,
+                        height: 80,
+                        width: 80,
+                        fit: BoxFit.cover,
+                      ),
               ),
               const SizedBox(width: 12),
               Expanded(
